@@ -1,12 +1,18 @@
+const feathers = require('@feathersjs/feathers');
+const socketio = require('@feathersjs/socketio-client');
+const io = require('socket.io-client');
+const auth = require('@feathersjs/authentication-client');
+
 // Establish a Socket.io connection
-const socket = io();
+const socket = io('http://localhost:3030');
+
 // Initialize our Feathers client application through Socket.io
 // with hooks and authentication.
 const client = feathers();
 
-client.configure(feathers.socketio(socket));
+client.configure(socketio(socket));
 // Use localStorage to store our login token
-client.configure(feathers.authentication({
+client.configure(auth({
   storage: window.localStorage
 }));
 
@@ -82,6 +88,26 @@ const login = async credentials => {
   }
 };
 
+// Add a new user to the list
+const addUser = user => {
+  const userList = document.querySelector('.user-list');
+
+  if(userList) {
+    // Add the user to the list
+    userList.insertAdjacentHTML('beforeend', `<li>
+      <a class="block relative" href="#">
+        <img src="${user.avatar}" alt="" class="avatar">
+        <span class="absolute username">${user.email}</span>
+      </a>
+    </li>`);
+
+    // Update the number of users
+    const userCount = document.querySelectorAll('.user-list li').length;
+
+    document.querySelector('.online-count').innerHTML = userCount;
+  }
+};
+
 document.addEventListener('click', async ev => {
   switch(ev.target.id) {
   case 'signup': {
@@ -89,7 +115,7 @@ document.addEventListener('click', async ev => {
     const credentials = getCredentials();
 
     // First create the user
-    await client.service('people').create(credentials);
+    await client.service('users').create(credentials);
     // If successful log them in
     await login(credentials);
 
@@ -113,6 +139,6 @@ document.addEventListener('click', async ev => {
 });
 
 // We will also see when new users get created in real-time
-client.service('users').on('created', console.log('new registration'));
+// client.service('users').on('created', console.log('new registration'));
 
 login();
