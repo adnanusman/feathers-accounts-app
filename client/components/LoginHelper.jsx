@@ -6,16 +6,16 @@ class LoginHelper extends Component {
 
     this.client = this.props.client;
 
-    this.setupEventListeners = this.setupEventListeners.bind(this);
-    this.login = this.login.bind(this);
     this.checkAuth = this.checkAuth.bind(this);
+    this.signup = this.signup.bind(this);
+    this.login = this.login.bind(this);
+    this.logout = this.logout.bind(this);
 
     this.state = {
       isLoading: true,
       errorMessage: ''
     }
 
-    this.setupEventListeners();
     this.checkAuth();
   }
 
@@ -29,42 +29,24 @@ class LoginHelper extends Component {
     return user;
   };
 
-  setupEventListeners() {
-    document.addEventListener('click', async ev => {
+  async signup() {
+    const credentials = this.getCredentials();
+    
+    // First create the user
+    await this.client.service('people').create(credentials);
+    // If successful log them in
+    await this.login();
+  }
 
-      switch(ev.target.id) {
-      case 'signup': {
-        // For signup, create a new user and then log them in
-        const credentials = this.getCredentials();
-    
-        // First create the user
-        await this.client.service('people').create(credentials);
-        // If successful log them in
-        await this.login(credentials);
-    
-        break;
-      }
-      case 'login': {
-        const user = this.getCredentials();
-    
-        await this.login(user);
-    
-        break;
-      }
-      case 'logout': {
-        await this.client.logout();
-    
-        this.isLoggedIn = false;
+  async logout() {
+    await this.client.logout()
+    .then(() => {
+      this.isLoggedIn = false;
 
-        this.setState({
-          isLoading: false
-        })
-    
-        break;
-      }
-      }
+      this.setState({
+        isLoading: false
+      })
     });
-    
   }
   
   // check authentication before displaying form
@@ -87,12 +69,15 @@ class LoginHelper extends Component {
   }
 
   async login(e) {
-    e.preventDefault();
+    if(e) {
+      e.preventDefault();
+    }
+    
+    const credentials = this.getCredentials();
+
     this.setState({
       isLoading: true
     })
-
-    const credentials = this.getCredentials();
 
     // If we get login information, add the strategy we want to use for login
     const payload = Object.assign({ strategy: 'local' }, credentials);
@@ -127,7 +112,7 @@ class LoginHelper extends Component {
 
     if(isLoggedIn) {
       return (
-        <button type="button" id="logout" class="button button-primary block signup">Logout</button>
+        <button type="button" onClick={this.logout} class="button button-primary block signup">Logout</button>
       )
     }
     
@@ -159,7 +144,7 @@ class LoginHelper extends Component {
                 Log in
               </button>
 
-              <button type="button" id="signup" class="button button-primary block signup">
+              <button type="button" onClick={this.signup} class="button button-primary block signup">
                 Sign up and log in
               </button>
             </form>
