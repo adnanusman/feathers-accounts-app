@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import Dashboard from './Dashboard.jsx';
+
 class LoginHelper extends Component {
   constructor(props) {
     super(props);
@@ -9,7 +11,6 @@ class LoginHelper extends Component {
     this.checkAuth = this.checkAuth.bind(this);
     this.signup = this.signup.bind(this);
     this.login = this.login.bind(this);
-    this.logout = this.logout.bind(this);
 
     this.state = {
       isLoading: true,
@@ -18,7 +19,6 @@ class LoginHelper extends Component {
 
     this.checkAuth();
   }
-
 
   getCredentials() {
     const user = {
@@ -38,17 +38,6 @@ class LoginHelper extends Component {
     await this.login();
   }
 
-  async logout() {
-    await this.client.logout()
-    .then(() => {
-      this.isLoggedIn = false;
-
-      this.setState({
-        isLoading: false
-      })
-    });
-  }
-  
   // check authentication before displaying form
   checkAuth() {
     this.client.authenticate().then((response) => {
@@ -84,8 +73,6 @@ class LoginHelper extends Component {
 
     await this.client.authenticate(payload)
       .then(() => {
-        console.log('dashboard');
-
         this.isLoggedIn = true;
       })
       .catch(err => {
@@ -112,7 +99,10 @@ class LoginHelper extends Component {
 
     if(isLoggedIn) {
       return (
-        <button type="button" onClick={this.logout} class="button button-primary block signup">Logout</button>
+        <Dashboard 
+          client={this.client} 
+          isLoggedIn={isLoggedIn} 
+        />
       )
     }
     
