@@ -3,8 +3,13 @@ const webpack = require('webpack');
 
 module.exports = {
   context: path.join(__dirname, 'client'),
+  mode: 'development',
   entry: {
     app: ['@babel/polyfill', './app.js'],
+  },
+  devtool: 'inline-source-map',
+  devServer: {
+    contentBase: './public'
   },
   output: {
     path: path.join(__dirname, 'public/'),

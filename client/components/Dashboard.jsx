@@ -22,7 +22,7 @@ class Dashboard extends Component {
 
     await this.client.logout()
     .then(() => {
-      this.isLoggedIn = false;
+      this.isLoggedIn = false; 
 
       this.setState({
         isLoading: false
@@ -30,7 +30,7 @@ class Dashboard extends Component {
     });
   }
   
-  render() { 
+  render() {
     const isLoggedIn = this.isLoggedIn;
 
     if(!isLoggedIn) {
@@ -41,7 +41,7 @@ class Dashboard extends Component {
 
     return (
       <div>
-        <h1>Dashboard</h1>
+        <h1>Dashboard test</h1>
         <button type="button" onClick={this.logout} class="button button-primary block signup">Logout</button>
       </div>      
      );

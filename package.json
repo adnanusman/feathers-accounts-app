@@ -27,7 +27,8 @@
     "test": "yarn run eslint && NODE_ENV= yarn run mocha",
     "eslint": "eslint src/. test/. --config .eslintrc.json",
     "dev": "webpack && nodemon src/",
-    "start": "webpack && node src/",
+    "backend": "nodemon src/",
+    "start": "webpack-dev-server --open&& node src/",
     "mocha": "mocha test/ --recursive --exit"
   },
   "dependencies": {
@@ -61,6 +62,7 @@
     "socket.io-client": "^2.2.0",
     "webpack": "^4.31.0",
     "webpack-cli": "^3.3.2",
+    "webpack-dev-server": "^3.3.1",
     "winston": "^3.0.0"
   },
   "devDependencies": {
