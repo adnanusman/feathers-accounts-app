@@ -27,7 +27,8 @@
     "test": "yarn run eslint && NODE_ENV= yarn run mocha",
     "eslint": "eslint src/. test/. --config .eslintrc.json",
     "dev": "webpack && nodemon src/",
-    "backend": "nodemon src/",
+    "be": "nodemon src/",
+    "fe": "webpack-dev-server --open",
     "start": "webpack-dev-server --open&& node src/",
     "mocha": "mocha test/ --recursive --exit"
   },

@@ -41,7 +41,7 @@ class Dashboard extends Component {
 
     return (
       <div>
-        <h1>Dashboard test</h1>
+        <h1>Dashboard</h1>
         <button type="button" onClick={this.logout} class="button button-primary block signup">Logout</button>
       </div>      
      );
