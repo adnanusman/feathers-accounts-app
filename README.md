@@ -1,56 +1,41 @@
-# accounts-app
+# Simple Accounts using FeathersJS and React
+ 
+## Getting Started
 
-> 
-
-## About
+### About
 
 This project uses [Feathers](http://feathersjs.com). An open source web framework for building modern real-time applications.
 
-## Getting Started
+You need Node and Yarn installed.
 
-Getting up and running is as easy as 1, 2, 3.
+This is just a simple application that I'm building for my own purposes but is opensource and anyone else can use it as they like or build on it, I'd love to see what you come up with.
 
-1. Make sure you have [NodeJS](https://nodejs.org/) and [npm](https://www.npmjs.com/) installed.
-2. Install your dependencies
+This application requires a connection the remote postgreSQL database, for everything to work you need to have a .env file. More information below.
 
-    ```
-    cd path/to/accounts-app; npm install
-    ```
+### ENV FILE REQUIRED
 
-3. Start your app
+You need to specify a few things in your .env file for the application to work.
 
-    ```
-    npm start
-    ```
+DB_STRING should contain your postgreSQL database string.
 
-## Testing
+### INSTRUCTIONS TO RUN IT LOCALLY
 
-Simply run `npm test` and all your tests in the `test/` directory will be run.
+Make a clone of the repo.
 
-## Scaffolding
+in the cloned directory, you can start installing the packages:
 
-Feathers has a powerful command line interface. Here are a few things it can do:
+yarn
 
-```
-$ npm install -g @feathersjs/cli          # Install Feathers CLI
+followed by running the frontend:
 
-$ feathers generate service               # Generate a new Service
-$ feathers generate hook                  # Generate a new Hook
-$ feathers help                           # Show all commands
-```
+yarn run fe
 
-## Help
+followed by running the backend:
 
-For more information on all the things you can do with Feathers visit [docs.feathersjs.com](http://docs.feathersjs.com).
-
-## Changelog
-
-__0.1.0__
-
-- Initial release
+yarn run be
 
 ## License
 
-Copyright (c) 2018
+Copyright (c) 2019
 
 Licensed under the [MIT license](LICENSE).
