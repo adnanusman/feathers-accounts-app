@@ -35,3 +35,7 @@ body {
 button {
   margin: 20px 0;
 }
+
+input, select {
+  margin-bottom: 10px;
+}

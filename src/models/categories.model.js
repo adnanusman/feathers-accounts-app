@@ -5,23 +5,23 @@ const DataTypes = Sequelize.DataTypes;
 
 module.exports = function (app) {
   const sequelizeClient = app.get('sequelizeClient');
-  const people = sequelizeClient.define('people', {
-    id: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-      unique: true
-    },
-    password: {
+  const categories = sequelizeClient.define('categories', {
+    title: {
       type: DataTypes.STRING,
       allowNull: false
     },
-
+    description: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    personId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: 'people',
+        key: 'id'
+      }
+    }
   }, {
     hooks: {
       beforeCount(options) {
@@ -31,15 +31,12 @@ module.exports = function (app) {
   });
 
   // eslint-disable-next-line no-unused-vars
-  people.associate = function (models) {
+  categories.associate = function (models) {
     // Define associations here
     // See http://docs.sequelizejs.com/en/latest/docs/associations/
-    
-    people.hasMany(models.balance);
-    people.hasMany(models.activity);
-    people.hasMany(models.categories);
-    people.hasMany(models.entries);
+    categories.belongsTo(models.people);
+    categories.hasMany(models.entries);
   };
 
-  return people;
+  return categories;
 };

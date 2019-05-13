@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 
 import LoginHelper from './LoginHelper.jsx';
+import AddSource from './AddSource.jsx';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -13,9 +14,14 @@ class Dashboard extends Component {
     this.logout = this.logout.bind(this);
     this.setBalance = this.setBalance.bind(this);
     this.disableLoading = this.disableLoading.bind(this);
+    this.addEntry = this.addEntry.bind(this);
+    this.handleCategories = this.handleCategories.bind(this);
+    this.handleSources = this.handleSources.bind(this);
 
     this.state = {
-      isLoading: true
+      isLoading: true,
+      addSources: false,
+      addCategories: false
     }
 
     this.setBalance();
@@ -69,10 +75,29 @@ class Dashboard extends Component {
       })
     });
   }
+
+  addEntry(e) {
+    e.preventDefault();
+
+    console.log(e);
+  }
+
+  handleSources(e) {
+    this.setState({
+      addSources: true
+    })
+  }
+  
+  handleCategories(e) {
+    e.preventDefault();
+
+    console.log(e);
+  }
   
   render() {
     const isLoggedIn = this.isLoggedIn;
     const balance = this.balance;
+    let {addSources, addCategories} = this.state;
 
     if(!isLoggedIn) {
       return (
@@ -94,11 +119,53 @@ class Dashboard extends Component {
           </div>
         </div>
 
-        {/* <form name="balanceForm" onSubmit={this.addBalance}>
-          <input type="text" name="balance" id="balance" />
-          <button type="submit">Add to Balance</button>         
-        </form> */}
 
+        <div>
+          <button onClick={this.handleCategories}>Add Category</button>
+          <button onClick={this.handleSources}>Add Source</button>
+        </div>
+        {addSources ? ( 
+          <AddSource 
+            client={this.client}
+            userId={this.userId} 
+          />
+        ) : (addCategories ? (
+          <div>Categories</div>
+        ) : (
+          <form name="entriesForm" onSubmit={this.addEntry}>
+            <fieldset>
+              <input type="text" name="title" id="title" placeholder="title" />
+            </fieldset> 
+            
+            <fieldset>
+              <select name="category">
+                <option value="1">Service 1</option>
+                <option value="2">Service 2</option>
+              </select>
+            </fieldset>          
+            
+            <fieldset>
+              <select name="type">
+                <option value="Income" defaultValue>Income</option>
+                <option value="Income">Expense</option>
+              </select>
+            </fieldset>
+
+            <fieldset>
+              <select name="source">
+                <option value="1">Source 1</option>
+                <option value="2">Source 2</option>
+                <option value="3">Source 3</option>
+              </select>
+            </fieldset>
+
+            <fieldset>
+              <input type="number" name="amount" id="amount" placeholder="Enter Amount"></input>
+            </fieldset>
+            
+            <button type="submit">Add Entry</button>         
+          </form>
+        ))}
       </div>          
     );
   }
