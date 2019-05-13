@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import LoginHelper from './LoginHelper.jsx';
 import AddSource from './AddSource.jsx';
 import AddCategory from './AddCategory.jsx';
+import { derToJose } from 'ecdsa-sig-formatter';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -18,6 +19,7 @@ class Dashboard extends Component {
     this.addEntry = this.addEntry.bind(this);
     this.handleCategories = this.handleCategories.bind(this);
     this.handleSources = this.handleSources.bind(this);
+    this.getData = this.getData.bind(this);
 
     this.state = {
       isLoading: true,
@@ -26,6 +28,18 @@ class Dashboard extends Component {
     }
 
     this.setBalance();
+    this.getData('source')
+      .then(response => {
+        this.sources = response
+      });
+
+    this.getData('categories')
+      .then(response => {
+        this.categories = response;
+      })
+      .then(() => {
+        this.disableLoading();
+      })
   }
 
   setBalance() {
@@ -47,13 +61,31 @@ class Dashboard extends Component {
           })
           .then(response => {
             this.balance = response.currentBal;          
-            this.disableLoading();
           })
         } else {
           this.balance = response.data[0].currentBal;
-          this.disableLoading();
         }
       })
+  }
+
+  getData(serviceName) {
+    return new Promise((resolve, reject) => { 
+      this.client.service(serviceName)
+      .find({
+        query: {
+          personId: {
+            $eq: this.userId
+          }
+        }
+      })
+      .then(response => {
+        if(response.data.length === 0) {
+          resolve(null);
+        } else {
+          resolve(response.data);
+        }
+      })
+    })
   }
 
   disableLoading() {
@@ -102,9 +134,14 @@ class Dashboard extends Component {
   }
   
   render() {
-    const isLoggedIn = this.isLoggedIn;
-    const balance = this.balance;
-    let {addSources, addCategories} = this.state;
+    const { isLoggedIn, balance, sources, categories } = this;
+    let { addSources, addCategories, isLoading } = this.state;
+
+    if(isLoading) {
+      return (
+        <div>Loading...</div>
+      )
+    }
 
     if(!isLoggedIn) {
       return (
@@ -144,32 +181,43 @@ class Dashboard extends Component {
         ) : (
           <form name="entriesForm" onSubmit={this.addEntry}>
             <fieldset>
+              <label for="title">Title:</label>
               <input type="text" name="title" id="title" placeholder="title" />
             </fieldset> 
             
             <fieldset>
-              <select name="category">
-                <option value="1">Service 1</option>
-                <option value="2">Service 2</option>
+              <label for="category">Category:</label>
+              <select name="category" id="category">
+              {categories.map(category => {
+                return (
+                  <option value={category.id}>{category.title}</option>
+                )
+              })}
+
               </select>
             </fieldset>          
             
             <fieldset>
-              <select name="type">
+              <label for="type">Type:</label>
+              <select name="type" id="type">
                 <option value="Income" defaultValue>Income</option>
                 <option value="Income">Expense</option>
               </select>
             </fieldset>
 
             <fieldset>
-              <select name="source">
-                <option value="1">Source 1</option>
-                <option value="2">Source 2</option>
-                <option value="3">Source 3</option>
+              <label for="source">Source:</label>
+              <select name="source" id="source">
+              {sources.map(source => {
+                return (
+                  <option value={source.id}>{source.title}</option>
+                )
+              })}
               </select>
             </fieldset>
 
             <fieldset>
+              <label for="amount">Amount:</label>
               <input type="number" name="amount" id="amount" placeholder="Enter Amount"></input>
             </fieldset>
             
