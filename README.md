@@ -10,7 +10,7 @@ You need Node and Yarn installed.
 
 This is just a simple application that I'm building for my own purposes but is opensource and anyone else can use it as they like or build on it, I'd love to see what you come up with.
 
-This application requires a connection to a remote postgreSQL database, for everything to work you need to have a .env file. More information below.
+This application requires a connection to a remote or local postgreSQL database, for everything to work you need to have a .env file. More information below.
 
 ### ENV FILE REQUIRED
 

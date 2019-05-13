@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 
-class AddSource extends Component {
+class AddCategory extends Component {
   constructor(props) {
     super(props);
 
     this.client = this.props.client;
     this.userId = this.props.userId;
 
-    this.getSources = this.getSources.bind(this);
+    this.getCategories = this.getCategories.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.disableLoading = this.disableLoading.bind(this);
 
@@ -17,11 +17,11 @@ class AddSource extends Component {
       successMessage: ''
     }
 
-    this.getSources();
+    this.getCategories();
   }
 
-  async getSources() {
-    this.client.service('source')
+  async getCategories() {
+    this.client.service('categories')
     .find({
       query: {
         personId: {
@@ -31,25 +31,24 @@ class AddSource extends Component {
     })
     .then(response => {
       if(response.data.length === 0) {
-        this.sources = null; 
+        this.categories = null;
       } else {
-        this.sources = response;
+        this.categories = response;
       }
     })
     .catch(() => {
-      this.sources = null;
+      this.categories = null;
     })
     .then(() => {
       this.disableLoading();
     })
-
   }
 
   handleSubmit(e) {
     e.preventDefault();
 
-    const title = document.addSource.title.value;
-    const description = document.addSource.description.value;
+    const title = document.addCategories.title.value;
+    const description = document.addCategories.description.value;
 
     if(title === '') {
       this.setState({
@@ -57,7 +56,7 @@ class AddSource extends Component {
         successMessage: ''
       })
     } else {
-      this.client.service('source')
+      this.client.service('categories')
         .create({
           personId: this.userId,
           title,
@@ -65,7 +64,7 @@ class AddSource extends Component {
         })
         .then(() => {
           this.setState({
-            successMessage: 'Successfully added source.',
+            successMessage: 'Successfully added category.',
             errorMessage: ''
           })
         })
@@ -79,20 +78,20 @@ class AddSource extends Component {
   }
 
   render() { 
-    const sources = this.sources;
+    const categories = this.categories;
     let {errorMessage, successMessage, isLoading} = this.state;
-  
+
     if(isLoading) {
       return (
         <div>Loading...</div>
       )
     }
-
+  
     return ( 
       <div className="flex-container">
-        <h1>Add a source</h1>
+        <h1>Add a category</h1>
 
-        <form name="addSource" onSubmit={this.handleSubmit}>
+        <form name="addCategories" onSubmit={this.handleSubmit}>
           <input type="text" name="title" placeholder="title"></input>
           <input type="text" name="description" placeholder="description"></input>
 
@@ -111,9 +110,9 @@ class AddSource extends Component {
           <button type="submit">Submit</button>
         </form>
 
-        <h2>Existing Sources:</h2>
+        <h2>Existing categories:</h2>
 
-        {sources ? (
+        {categories ? (
           <table>
             <tbody>
               <tr>
@@ -121,11 +120,11 @@ class AddSource extends Component {
                 <th>Description</th>
               </tr>
           
-              {sources.data.map(source => {
+              {categories.data.map(category => {
                 return (
                   <tr>
-                    <td>{source.title}</td>
-                    <td>{source.description ? source.description : 'no description provided.'}</td>
+                    <td key={category.id}>{category.title}</td>
+                    <td key={category.id}>{category.description ? category.description : 'no description provided.'}</td>
                   </tr>
                 )
               })}
@@ -133,7 +132,7 @@ class AddSource extends Component {
             </tbody>         
           </table>
         ) : (
-          <p>There were no sources found.</p>
+          <p>There were no categories found.</p>
         )}
       </div>
 
@@ -142,4 +141,4 @@ class AddSource extends Component {
   }
 }
  
-export default AddSource;
+export default AddCategory;

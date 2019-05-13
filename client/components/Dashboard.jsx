@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 
 import LoginHelper from './LoginHelper.jsx';
 import AddSource from './AddSource.jsx';
+import AddCategory from './AddCategory.jsx';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -83,15 +84,21 @@ class Dashboard extends Component {
   }
 
   handleSources(e) {
+    e.preventDefault();
+
     this.setState({
-      addSources: true
+      addSources: true,
+      addCategories: false
     })
   }
   
   handleCategories(e) {
     e.preventDefault();
-
-    console.log(e);
+    
+    this.setState({
+      addCategories: true,
+      addSources: false
+    })
   }
   
   render() {
@@ -130,7 +137,10 @@ class Dashboard extends Component {
             userId={this.userId} 
           />
         ) : (addCategories ? (
-          <div>Categories</div>
+          <AddCategory 
+            client={this.client}
+            userId={this.userId} 
+          />
         ) : (
           <form name="entriesForm" onSubmit={this.addEntry}>
             <fieldset>
