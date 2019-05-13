@@ -24,7 +24,9 @@ class Dashboard extends Component {
     this.state = {
       isLoading: true,
       addSources: false,
-      addCategories: false
+      addCategories: false,
+      errorMessage: '',
+      successMessage: ''
     }
 
     this.setBalance();
@@ -112,7 +114,36 @@ class Dashboard extends Component {
   addEntry(e) {
     e.preventDefault();
 
-    console.log(e);
+    const title = document.entriesForm.title.value;
+    const category = document.entriesForm.category.value;
+    const type = document.entriesForm.type.value;
+    const source = document.entriesForm.source.value;
+    const amount = document.entriesForm.amount.value;
+
+
+    this.client.service('entries')
+      .create({
+        personId: this.userId,
+        title,
+        categoryId: category,
+        type,
+        source,
+        amount
+      })
+      .then(response => {
+        console.log(response);
+
+        this.setState({
+          successMessage: 'Successfully added entry',
+          errorMessage: ''
+        })
+      })
+      .catch(() => {
+        this.setState({
+          errorMessage: 'There was an error adding this entry',
+          successMessage: ''
+        })
+      })
   }
 
   handleSources(e) {
@@ -135,7 +166,7 @@ class Dashboard extends Component {
   
   render() {
     const { isLoggedIn, balance, sources, categories } = this;
-    let { addSources, addCategories, isLoading } = this.state;
+    let { addSources, addCategories, isLoading, errorMessage, successMessage } = this.state;
 
     if(isLoading) {
       return (
@@ -181,16 +212,16 @@ class Dashboard extends Component {
         ) : (
           <form name="entriesForm" onSubmit={this.addEntry}>
             <fieldset>
-              <label for="title">Title:</label>
+              <label htmlFor="title">Title:</label>
               <input type="text" name="title" id="title" placeholder="title" />
             </fieldset> 
             
             <fieldset>
-              <label for="category">Category:</label>
+              <label htmlFor="category">Category:</label>
               <select name="category" id="category">
               {categories.map(category => {
                 return (
-                  <option value={category.id}>{category.title}</option>
+                  <option key={category.id} value={category.id}>{category.title}</option>
                 )
               })}
 
@@ -198,32 +229,44 @@ class Dashboard extends Component {
             </fieldset>          
             
             <fieldset>
-              <label for="type">Type:</label>
+              <label htmlFor="type">Type:</label>
               <select name="type" id="type">
-                <option value="Income" defaultValue>Income</option>
-                <option value="Income">Expense</option>
+                <option value="Income">Income</option>
+                <option value="Expense">Expense</option>
               </select>
             </fieldset>
 
             <fieldset>
-              <label for="source">Source:</label>
+              <label htmlFor="source">Source:</label>
               <select name="source" id="source">
               {sources.map(source => {
                 return (
-                  <option value={source.id}>{source.title}</option>
+                  <option key={source.id} value={source.id}>{source.title}</option>
                 )
               })}
               </select>
             </fieldset>
 
             <fieldset>
-              <label for="amount">Amount:</label>
+              <label htmlFor="amount">Amount:</label>
               <input type="number" name="amount" id="amount" placeholder="Enter Amount"></input>
             </fieldset>
             
             <button type="submit">Add Entry</button>         
           </form>
         ))}
+
+          {errorMessage && 
+            <div className="error-message">
+              {errorMessage}
+            </div>
+          }
+
+          {successMessage && 
+            <div className="success-message">
+              {successMessage}
+            </div>
+          }
       </div>          
     );
   }
