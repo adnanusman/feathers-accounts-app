@@ -30,6 +30,14 @@ module.exports = {
           }
         }],
       },
+      {
+        // inject css files into the html
+        test: /\.css/,
+        use: [
+          'style-loader',
+          'css-loader'
+        ]
+      }
     ],
   },
 };

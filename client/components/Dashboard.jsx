@@ -95,18 +95,28 @@ class Dashboard extends Component {
     }
 
     return (
-      <div>
-        <h1>Dashboard</h1>
+      <div class="flex-container">
+        <div class="header-container">
+          <div class="header-left">
+            <h1>Dashboard</h1>
+          </div>
+        
+          <div class="header-right">
+            <button type="button" onClick={this.logout} className="button button-primary block signup">Logout</button>
+            
+            <p>Your current balance is: ${balance}</p>
+          </div>
+        </div>
+
+
+
         {/* <form name="balanceForm" onSubmit={this.addBalance}>
           <input type="text" name="balance" id="balance" />
           <button type="submit">Add to Balance</button>         
         </form> */}
 
-        <p>Your current balance is: ${balance}</p>
-
-        <button type="button" onClick={this.logout} className="button button-primary block signup">Logout</button>
-      </div>      
-     );
+      </div>          
+    );
   }
 }
  

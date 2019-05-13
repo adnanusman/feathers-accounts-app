@@ -1,5 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import './css/main.css';
 
 import LoginHelper from './components/LoginHelper.jsx';
 
