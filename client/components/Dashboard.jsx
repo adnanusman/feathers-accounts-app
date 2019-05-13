@@ -12,9 +12,10 @@ class Dashboard extends Component {
 
     this.logout = this.logout.bind(this);
     this.setBalance = this.setBalance.bind(this);
+    this.disableLoading = this.disableLoading.bind(this);
 
     this.state = {
-      isLoading: false
+      isLoading: true
     }
 
     this.setBalance();
@@ -32,12 +33,8 @@ class Dashboard extends Component {
         }
       })
       .then(response => {
+
         if(response.data[0].loginCount === 1) {
-          this.client.service('balance')
-            .create({
-              personId: userId
-            })
-        } else {
           this.client.service('balance')
             .find({
               query: {
@@ -47,13 +44,29 @@ class Dashboard extends Component {
               }
             })
             .then(response => {
-              console.log(response);
+              if(response.data.length === 0) {
+                this.client.service('balance')
+                .create({
+                  personId: userId
+                })
+
+                this.disableLoading();
+              } else {
+                this.balance = response.data[0].currentBal;
+                this.disableLoading();
+              }
             })
         }
       })
       .catch((err) => {
-        // console.log(err)
+        console.log(err)
       })
+  }
+
+  disableLoading() {
+    this.setState({
+      isLoading: false
+    })
   }
 
   async logout() {
@@ -73,6 +86,7 @@ class Dashboard extends Component {
   
   render() {
     const isLoggedIn = this.isLoggedIn;
+    const balance = this.balance;
 
     if(!isLoggedIn) {
       return (
@@ -87,6 +101,8 @@ class Dashboard extends Component {
           <input type="text" name="balance" id="balance" />
           <button type="submit">Add to Balance</button>         
         </form> */}
+
+        <p>Your current balance is: ${balance}</p>
 
         <button type="button" onClick={this.logout} className="button button-primary block signup">Logout</button>
       </div>      
