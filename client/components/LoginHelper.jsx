@@ -132,7 +132,8 @@ class LoginHelper extends Component {
       })
       .catch(err => {
         this.setState({
-          errorMessage: err.message
+          errorMessage: err.message,
+          isLoading: false
         })
       })
     })
