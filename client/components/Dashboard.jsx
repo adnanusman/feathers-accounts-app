@@ -10,8 +10,6 @@ class Dashboard extends Component {
     this.isLoggedIn = this.props.isLoggedIn;
     this.userId = this.props.userId;
 
-    console.log('userid', this.userId);
-
     this.logout = this.logout.bind(this);
     this.setBalance = this.setBalance.bind(this);
     this.disableLoading = this.disableLoading.bind(this);
