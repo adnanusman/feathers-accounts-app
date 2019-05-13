@@ -39,22 +39,32 @@ class LoginHelper extends Component {
   }
 
   // check authentication before displaying form
-  checkAuth() {
-    this.client.authenticate().then((response) => {
-      if(response.accessToken.length > 0) {
-        // set login status to true if there is a token
-        this.isLoggedIn = true;
+  async checkAuth() {
+    await new Promise((resolve, reject) => {
+      this.client.authenticate().then((response) => {
+        if(response.accessToken.length > 0) {
+          // set login status to true if there is a token
 
-        // set loading state to false
+          this.client.passport.verifyJWT(response.accessToken)
+          .then(response => {
+            this.userId = response.userId;
+
+            this.isLoggedIn = true;
+
+            // set loading state to false
+            this.setState({
+              isLoading: false
+            });
+
+            resolve();
+          })
+        }
+      }).catch(() => {
         this.setState({
           isLoading: false
         });
-      }
-    }).catch(() => {
-      this.setState({
-        isLoading: false
       });
-    });
+    })
   }
 
   async login(e) {
@@ -71,20 +81,61 @@ class LoginHelper extends Component {
     // If we get login information, add the strategy we want to use for login
     const payload = Object.assign({ strategy: 'local' }, credentials);
 
-    await this.client.authenticate(payload)
-      .then(() => {
-        this.isLoggedIn = true;
+    const timestamp = new Date().getTime();
+
+    await new Promise((resolve, reject) => {
+      this.client.authenticate(payload)
+      .then(response => {
+        this.client.passport.verifyJWT(response.accessToken)
+        .then(response => {
+          this.userId = response.userId;
+
+          // check if user activity exists..
+          this.client.service('activity')
+            .find({
+              query: {
+                personId: {
+                  $eq: response.userId
+                }
+              }
+            })
+            .then(response => {
+              // if exists, add a login count to the database..
+              this.client.service('activity')
+                .patch(response.data[0].id, {
+                  loginCount: response.data[0].loginCount + 1,
+                })
+                .then(() => {
+                  this.isLoggedIn = true;
+                  this.setState({
+                    isLoading: false
+                  })
+                  resolve();
+                })
+            })
+            .catch(() => {
+              // otherwise create the activity entry for this user
+              this.client.service('activity')
+                .create({
+                  personId: this.userId,
+                  lastLogin: timestamp
+                })
+                .then(() => {
+                  this.isLoggedIn = true;
+                  this.setState({
+                    isLoading: false
+                  })
+                  resolve();
+                })
+            })
+        })
       })
       .catch(err => {
         this.setState({
           errorMessage: err.message
         })
       })
-      .then(() => {
-        this.setState({
-          isLoading: false
-        })
-      })
+    })
   };
 
   render() {
@@ -101,40 +152,41 @@ class LoginHelper extends Component {
       return (
         <Dashboard 
           client={this.client} 
-          isLoggedIn={isLoggedIn} 
+          isLoggedIn={isLoggedIn}
+          userId={this.userId}
         />
       )
     }
     
     return ( 
-      <main class="login container">
-        <div class="row">
-          <div class="col-12 col-6-tablet push-3-tablet text-center heading">
-            <h1 class="font-100">Log in or signup</h1>
+      <main className="login container">
+        <div className="row">
+          <div className="col-12 col-6-tablet push-3-tablet text-center heading">
+            <h1 className="font-100">Log in or signup</h1>
           </div>
         </div>
-        <div class="row">
-          <div class="col-12 col-6-tablet push-3-tablet col-4-desktop push-4-desktop">
-            <form class="form" onSubmit={this.login}>
+        <div className="row">
+          <div className="col-12 col-6-tablet push-3-tablet col-4-desktop push-4-desktop">
+            <form className="form" onSubmit={this.login}>
               <fieldset>
-                <input class="block" type="email" name="email" placeholder="email" />
+                <input className="block" type="email" name="email" placeholder="email" />
               </fieldset>
 
               <fieldset>
-                <input class="block" type="password" name="password" placeholder="password" />
+                <input className="block" type="password" name="password" placeholder="password" />
               </fieldset>
 
               {errorMessage && 
-                <div class="error-message">
+                <div className="error-message">
                   {errorMessage}
                 </div>
               }
 
-              <button type="submit" onClick={this.login} class="button button-primary block signup">
+              <button type="submit" onClick={this.login} className="button button-primary block signup">
                 Log in
               </button>
 
-              <button type="button" onClick={this.signup} class="button button-primary block signup">
+              <button type="button" onClick={this.signup} className="button button-primary block signup">
                 Sign up and log in
               </button>
             </form>

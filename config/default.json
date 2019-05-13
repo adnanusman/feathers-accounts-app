@@ -29,5 +29,6 @@
       "usernameField": "email",
       "passwordField": "password"
     }
-  }
+  },
+  "postgres": "postgres://postgres:@localhost:5432/accounts_app"
 }
