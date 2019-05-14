@@ -10,6 +10,7 @@ class AddCategory extends Component {
     this.getCategories = this.getCategories.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.disableLoading = this.disableLoading.bind(this);
+    this.deleteCategory = this.deleteCategory.bind(this);
 
     this.state = {
       isLoading: true,
@@ -63,12 +64,27 @@ class AddCategory extends Component {
           description
         })
         .then(() => {
+          this.getCategories();
           this.setState({
             successMessage: 'Successfully added category.',
             errorMessage: ''
           })
         })
     }
+  }
+
+  deleteCategory(categoryId) {
+    this.client.service('categories')
+      .remove(categoryId)
+      .then(() => {
+        this.categories = null;
+        
+        this.getCategories();
+        this.setState({
+          successMessage: 'Deleted Category Successfully.',
+          errorMessage: ''
+        })
+      })
   }
 
   disableLoading() {
@@ -95,6 +111,8 @@ class AddCategory extends Component {
           <input type="text" name="title" placeholder="title"></input>
           <input type="text" name="description" placeholder="description"></input>
 
+          <button type="submit">Submit</button>
+
           {errorMessage && 
             <div className="error-message">
               {errorMessage}
@@ -106,8 +124,6 @@ class AddCategory extends Component {
               {successMessage}
             </div>
           }
-
-          <button type="submit">Submit</button>
         </form>
 
         <h2>Existing categories:</h2>
@@ -125,6 +141,7 @@ class AddCategory extends Component {
                   <tr>
                     <td key={category.id}>{category.title}</td>
                     <td key={category.id}>{category.description ? category.description : 'no description provided.'}</td>
+                    <td key={category.id}><button onClick={() => this.deleteCategory(category.id)}>Delete</button></td>
                   </tr>
                 )
               })}

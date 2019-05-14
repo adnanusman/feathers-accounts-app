@@ -27,7 +27,9 @@ class Dashboard extends Component {
       errorMessage: '',
       successMessage: ''
     }
+  }
 
+  componentWillMount() {
     this.setBalance();
     this.getData('source')
       .then(response => {
@@ -134,17 +136,40 @@ class Dashboard extends Component {
         source,
         amount
       })
-      .then(response => {
-        console.log(response);
-
-        this.setState({
-          successMessage: 'Successfully added entry',
-          errorMessage: ''
-        })
+      .then(() => {
+        this.getData('entries')
+          .then(response => {
+            this.entries = response;
+            this.setState({
+              successMessage: 'Successfully added entry',
+              errorMessage: ''
+            })    
+          })
       })
       .catch(() => {
         this.setState({
           errorMessage: 'There was an error adding this entry',
+          successMessage: ''
+        })
+      })
+  }
+
+  deleteEntry(entryId) {
+    this.client.service('entries')
+      .remove(entryId)
+      .then(() => {
+        this.getData('entries')
+        .then(response => {
+          this.entries = response;
+          this.setState({
+            successMessage: 'Deleted Entry Successfully.',
+            errorMessage: ''
+          })
+        })
+      })
+      .catch(() => {
+        this.setState({
+          errorMessage: 'There was a problem, try again.',
           successMessage: ''
         })
       })
@@ -301,7 +326,8 @@ class Dashboard extends Component {
                                     <td>{categoryTitle}</td>
                                     <td>{sourceTitle}</td>
                                     <td>{entry.type}</td>
-                                    <td>${entry.amount}</td>   
+                                    <td>${entry.amount}</td>
+                                    <td><button onClick={() => this.deleteEntry(entry.id)}>Delete</button></td>  
                                   </tr>
                                 )  
                               }
