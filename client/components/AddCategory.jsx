@@ -78,7 +78,7 @@ class AddCategory extends Component {
       .remove(categoryId)
       .then(() => {
         this.categories = null;
-        
+
         this.getCategories();
         this.setState({
           successMessage: 'Deleted Category Successfully.',
@@ -138,10 +138,10 @@ class AddCategory extends Component {
           
               {categories.data.map(category => {
                 return (
-                  <tr>
-                    <td key={category.id}>{category.title}</td>
-                    <td key={category.id}>{category.description ? category.description : 'no description provided.'}</td>
-                    <td key={category.id}><button onClick={() => this.deleteCategory(category.id)}>Delete</button></td>
+                  <tr key={category.id}>
+                    <td>{category.title}</td>
+                    <td>{category.description ? category.description : 'no description provided.'}</td>
+                    <td><button onClick={() => this.deleteCategory(category.id)}>Delete</button></td>
                   </tr>
                 )
               })}

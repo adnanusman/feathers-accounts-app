@@ -126,6 +126,21 @@ class Dashboard extends Component {
     const source = document.entriesForm.source.value;
     const amount = document.entriesForm.amount.value;
 
+    if(title === '') {
+      this.setState({
+        errorMessage: 'A title is required',
+        successMessage: ''
+      })
+      return;
+    }
+
+    if(amount === '') {
+      this.setState({
+        errorMessage: 'An amount is required',
+        successMessage: ''
+      })
+      return;
+    }
 
     this.client.service('entries')
       .create({
@@ -239,7 +254,7 @@ class Dashboard extends Component {
             userId={this.userId} 
           />
         ) : (
-          <div class="main-content">
+          <div className="main-content">
             <div className="form-container">
               <form name="entriesForm" onSubmit={this.addEntry}>
                 <fieldset>

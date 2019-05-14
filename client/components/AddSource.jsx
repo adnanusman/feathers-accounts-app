@@ -10,6 +10,7 @@ class AddSource extends Component {
     this.getSources = this.getSources.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.disableLoading = this.disableLoading.bind(this);
+    this.deleteSource = this.deleteSource.bind(this);
 
     this.state = {
       isLoading: true,
@@ -64,12 +65,29 @@ class AddSource extends Component {
           description
         })
         .then(() => {
+          this.sources = null;
+
+          this.getSources();
           this.setState({
             successMessage: 'Successfully added source.',
             errorMessage: ''
           })
         })
     }
+  }
+
+  deleteSource(sourceId) {
+    this.client.service('source')
+      .remove(sourceId)
+      .then(() => {
+        this.sources = null;
+        
+        this.getSources();
+        this.setState({
+          successMessage: 'Deleted Source Successfully.',
+          errorMessage: ''
+        })
+      })
   }
 
   disableLoading() {
@@ -123,9 +141,10 @@ class AddSource extends Component {
           
               {sources.data.map(source => {
                 return (
-                  <tr>
+                  <tr key={source.id}>
                     <td>{source.title}</td>
                     <td>{source.description ? source.description : 'no description provided.'}</td>
+                    <td><button onClick={() => this.deleteSource(source.id)}>Delete</button></td>
                   </tr>
                 )
               })}
