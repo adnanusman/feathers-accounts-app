@@ -294,7 +294,7 @@ class Dashboard extends Component {
                             if(parseInt(entry.source) === source.id) {        
                               let sourceTitle = source.title;
                               return (
-                                <tr>
+                                <tr key={entry.id}>
                                   <td>{entry.createdAt}</td>
                                   <td>{entry.title}</td>
                                   <td>{categoryTitle}</td>
