@@ -61,3 +61,15 @@ input, select {
 label {
   margin-right: 5px;
 }
+
+.error-message {
+  background: #650000;
+  color: #fff;
+  text-align: center;
+}
+
+.success-message {
+  background: #658444;
+  color: #fff;
+  text-align: center;
+}
