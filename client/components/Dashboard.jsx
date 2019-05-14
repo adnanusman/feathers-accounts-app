@@ -226,7 +226,7 @@ class Dashboard extends Component {
                 <fieldset>
                   <label htmlFor="category">Category:</label>
                   <select name="category" id="category">
-                  {categories.map(category => {
+                  {categories && categories.map(category => {
                     return (
                       <option key={category.id} value={category.id}>{category.title}</option>
                     )
@@ -246,7 +246,7 @@ class Dashboard extends Component {
                 <fieldset>
                   <label htmlFor="source">Source:</label>
                   <select name="source" id="source">
-                  {sources.map(source => {
+                  {sources && sources.map(source => {
                     return (
                       <option key={source.id} value={source.id}>{source.title}</option>
                     )
@@ -286,27 +286,31 @@ class Dashboard extends Component {
                     <th>Amount</th>
                   </tr>
                   
-                  {entries.map(entry => {
-                    return categories.map(category => {
-                      if(entry.categoryId === category.id) {
-                        let categoryTitle = category.title;
-                          return sources.map(source => {
-                            if(parseInt(entry.source) === source.id) {        
-                              let sourceTitle = source.title;
-                              return (
-                                <tr key={entry.id}>
-                                  <td>{entry.createdAt}</td>
-                                  <td>{entry.title}</td>
-                                  <td>{categoryTitle}</td>
-                                  <td>{sourceTitle}</td>
-                                  <td>{entry.type}</td>
-                                  <td>${entry.amount}</td>   
-                                </tr>
-                              )  
+                  {entries && entries.map(entry => {
+                    if(categories) {
+                      return categories.map(category => {
+                        if(entry.categoryId === category.id) {
+                          let categoryTitle = category.title;
+                          if(sources) {
+                            return sources.map(source => {
+                              if(parseInt(entry.source) === source.id) {        
+                                let sourceTitle = source.title;
+                                return (
+                                  <tr key={entry.id}>
+                                    <td>{entry.createdAt}</td>
+                                    <td>{entry.title}</td>
+                                    <td>{categoryTitle}</td>
+                                    <td>{sourceTitle}</td>
+                                    <td>{entry.type}</td>
+                                    <td>${entry.amount}</td>   
+                                  </tr>
+                                )  
+                              }
+                            })
                           }
-                        })
-                      }
-                    })
+                        }
+                      })
+                    }
                   })}
                 </tbody>
               </table>
