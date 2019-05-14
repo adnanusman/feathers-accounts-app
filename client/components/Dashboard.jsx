@@ -287,12 +287,11 @@ class Dashboard extends Component {
                 <th>Amount</th>
               </tr>
               
-              
               {entries.map(entry => {
-                categories.map(category => {
+                return categories.map(category => {
                   if(entry.categoryId === category.id) {
                     let categoryTitle = category.title;
-                      sources.map(source => {
+                      return sources.map(source => {
                         if(parseInt(entry.source) === source.id) {        
                           let sourceTitle = source.title;
                           return (
@@ -302,7 +301,7 @@ class Dashboard extends Component {
                               <td>{categoryTitle}</td>
                               <td>{sourceTitle}</td>
                               <td>{entry.type}</td>
-                              <td>{entry.amount}</td>   
+                              <td>${entry.amount}</td>   
                             </tr>
                           )  
                       }
