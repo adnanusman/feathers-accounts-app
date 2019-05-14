@@ -36,6 +36,23 @@ button {
   margin: 20px 0;
 }
 
+.main-content {
+  display: flex;
+}
+
+.one-half {
+  flex: 1;
+}
+
+.two-thirds {
+  flex: 2;
+}
+
+.form-container {
+  border: 2px #650000 solid;
+  padding: 10px;
+}
+
 input, select {
   margin-bottom: 10px;
 }

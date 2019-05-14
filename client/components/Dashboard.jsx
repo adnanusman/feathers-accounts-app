@@ -32,12 +32,17 @@ class Dashboard extends Component {
     this.setBalance();
     this.getData('source')
       .then(response => {
-        this.sources = response
+        this.sources = response;
       });
 
     this.getData('categories')
       .then(response => {
         this.categories = response;
+      })
+
+    this.getData('entries')
+      .then(response => {
+        this.entries = response;
       })
       .then(() => {
         this.disableLoading();
@@ -165,7 +170,7 @@ class Dashboard extends Component {
   }
   
   render() {
-    const { isLoggedIn, balance, sources, categories } = this;
+    const { isLoggedIn, balance, sources, categories, entries } = this;
     let { addSources, addCategories, isLoading, errorMessage, successMessage } = this.state;
 
     if(isLoading) {
@@ -210,50 +215,52 @@ class Dashboard extends Component {
             userId={this.userId} 
           />
         ) : (
-          <form name="entriesForm" onSubmit={this.addEntry}>
-            <fieldset>
-              <label htmlFor="title">Title:</label>
-              <input type="text" name="title" id="title" placeholder="title" />
-            </fieldset> 
-            
-            <fieldset>
-              <label htmlFor="category">Category:</label>
-              <select name="category" id="category">
-              {categories.map(category => {
-                return (
-                  <option key={category.id} value={category.id}>{category.title}</option>
-                )
-              })}
+          <div className="form-container">
+            <form name="entriesForm" onSubmit={this.addEntry}>
+              <fieldset>
+                <label htmlFor="title">Title:</label>
+                <input type="text" name="title" id="title" placeholder="title" />
+              </fieldset> 
+              
+              <fieldset>
+                <label htmlFor="category">Category:</label>
+                <select name="category" id="category">
+                {categories.map(category => {
+                  return (
+                    <option key={category.id} value={category.id}>{category.title}</option>
+                  )
+                })}
 
-              </select>
-            </fieldset>          
-            
-            <fieldset>
-              <label htmlFor="type">Type:</label>
-              <select name="type" id="type">
-                <option value="Income">Income</option>
-                <option value="Expense">Expense</option>
-              </select>
-            </fieldset>
+                </select>
+              </fieldset>          
+              
+              <fieldset>
+                <label htmlFor="type">Type:</label>
+                <select name="type" id="type">
+                  <option value="Income">Income</option>
+                  <option value="Expense">Expense</option>
+                </select>
+              </fieldset>
 
-            <fieldset>
-              <label htmlFor="source">Source:</label>
-              <select name="source" id="source">
-              {sources.map(source => {
-                return (
-                  <option key={source.id} value={source.id}>{source.title}</option>
-                )
-              })}
-              </select>
-            </fieldset>
+              <fieldset>
+                <label htmlFor="source">Source:</label>
+                <select name="source" id="source">
+                {sources.map(source => {
+                  return (
+                    <option key={source.id} value={source.id}>{source.title}</option>
+                  )
+                })}
+                </select>
+              </fieldset>
 
-            <fieldset>
-              <label htmlFor="amount">Amount:</label>
-              <input type="number" name="amount" id="amount" placeholder="Enter Amount"></input>
-            </fieldset>
-            
-            <button type="submit">Add Entry</button>         
-          </form>
+              <fieldset>
+                <label htmlFor="amount">Amount:</label>
+                <input type="number" name="amount" id="amount" placeholder="Enter Amount"></input>
+              </fieldset>
+              
+              <button type="submit">Add Entry</button>         
+            </form>
+          </div>
         ))}
 
           {errorMessage && 
@@ -267,6 +274,45 @@ class Dashboard extends Component {
               {successMessage}
             </div>
           }
+
+        <div className="entry-container">
+          <table>
+            <tbody>
+              <tr>
+                <th>Created</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Source</th>
+                <th>Type</th>
+                <th>Amount</th>
+              </tr>
+              
+              
+              {entries.map(entry => {
+                categories.map(category => {
+                  if(entry.categoryId === category.id) {
+                    let categoryTitle = category.title;
+                      sources.map(source => {
+                        if(parseInt(entry.source) === source.id) {        
+                          let sourceTitle = source.title;
+                          return (
+                            <tr>
+                              <td>{entry.createdAt}</td>
+                              <td>{entry.title}</td>
+                              <td>{categoryTitle}</td>
+                              <td>{sourceTitle}</td>
+                              <td>{entry.type}</td>
+                              <td>{entry.amount}</td>   
+                            </tr>
+                          )  
+                      }
+                    })
+                  }
+                })
+              })}
+            </tbody>
+          </table>
+        </div>
       </div>          
     );
   }
