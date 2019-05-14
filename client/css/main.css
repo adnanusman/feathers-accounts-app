@@ -38,6 +38,7 @@ button {
 
 .main-content {
   display: flex;
+  flex-direction: column;
 }
 
 .one-half {
