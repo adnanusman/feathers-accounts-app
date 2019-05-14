@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import LoginHelper from './LoginHelper.jsx';
 import AddSource from './AddSource.jsx';
 import AddCategory from './AddCategory.jsx';
-import { derToJose } from 'ecdsa-sig-formatter';
 
 class Dashboard extends Component {
   constructor(props) {
