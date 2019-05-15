@@ -14,6 +14,7 @@ class Dashboard extends Component {
 
     this.logout = this.logout.bind(this);
     this.setBalance = this.setBalance.bind(this);
+    this.changeBalance = this.changeBalance.bind(this);
     this.disableLoading = this.disableLoading.bind(this);
     this.addEntry = this.addEntry.bind(this);
     this.handleCategories = this.handleCategories.bind(this);
@@ -47,6 +48,41 @@ class Dashboard extends Component {
       })
       .then(() => {
         this.disableLoading();
+      })
+  }
+
+  changeBalance(type, amount, del = false) {
+    let newBalance;
+    
+    if(del === false) {
+      newBalance = type === 'Income' ? parseInt(this.balance) + parseInt(amount) : parseInt(this.balance) - parseInt(amount);
+    } else {
+      newBalance = type === 'Income' ? parseInt(this.balance) - parseInt(amount) : parseInt(this.balance) + parseInt(amount);
+    }
+  
+    this.client.service('balance')
+      .find({
+        query: {
+          personId: {
+            $eq: this.userId
+          }
+        }
+      })
+      .then(response => {
+        const balanceId = response.data[0].id;
+
+        this.client.service('balance')
+          .patch(balanceId, {
+            currentBal: newBalance
+          })
+          .then(response => {
+            this.balance = response.currentBal;
+
+            // just to update the state and reset the component
+            this.setState({
+              errorMessage: ''
+            })
+          })
       })
   }
 
@@ -155,10 +191,15 @@ class Dashboard extends Component {
         this.getData('entries')
           .then(response => {
             this.entries = response;
+
+            this.changeBalance(type, amount);
+
             this.setState({
               successMessage: 'Successfully added entry',
               errorMessage: ''
-            })    
+            })
+
+            document.entriesForm.reset();
           })
       })
       .catch(() => {
@@ -169,13 +210,15 @@ class Dashboard extends Component {
       })
   }
 
-  deleteEntry(entryId) {
+  deleteEntry(entryId, type, amount) {
     this.client.service('entries')
       .remove(entryId)
       .then(() => {
         this.getData('entries')
         .then(response => {
           this.entries = response;
+          this.changeBalance(type, amount, true);
+
           this.setState({
             successMessage: 'Deleted Entry Successfully.',
             errorMessage: ''
@@ -323,6 +366,7 @@ class Dashboard extends Component {
                     <th>Source</th>
                     <th>Type</th>
                     <th>Amount</th>
+                    <th></th>
                   </tr>
                   
                   {entries ? ( entries.map(entry => {
@@ -342,7 +386,7 @@ class Dashboard extends Component {
                                     <td>{sourceTitle}</td>
                                     <td>{entry.type}</td>
                                     <td>${entry.amount}</td>
-                                    <td><button onClick={() => this.deleteEntry(entry.id)}>Delete</button></td>  
+                                    <td><button onClick={() => this.deleteEntry(entry.id, entry.type, entry.amount)}>Delete</button></td>  
                                   </tr>
                                 )  
                               }
@@ -352,7 +396,9 @@ class Dashboard extends Component {
                       })
                     }
                   })) : (
-                    <h4>There were no entries found..</h4>
+                    <tr>
+                      <td>There were no entries found..</td>
+                    </tr>
                   )}
                 </tbody>
               </table>
