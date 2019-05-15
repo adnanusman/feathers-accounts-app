@@ -325,7 +325,7 @@ class Dashboard extends Component {
                     <th>Amount</th>
                   </tr>
                   
-                  {entries && entries.map(entry => {
+                  {entries ? ( entries.map(entry => {
                     if(categories) {
                       return categories.map(category => {
                         if(entry.categoryId === category.id) {
@@ -351,7 +351,9 @@ class Dashboard extends Component {
                         }
                       })
                     }
-                  })}
+                  })) : (
+                    <h4>There were no entries found..</h4>
+                  )}
                 </tbody>
               </table>
             </div>
