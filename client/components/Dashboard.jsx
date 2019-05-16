@@ -19,6 +19,7 @@ class Dashboard extends Component {
     this.addEntry = this.addEntry.bind(this);
     this.handleCategories = this.handleCategories.bind(this);
     this.handleSources = this.handleSources.bind(this);
+    this.handleDashboard = this.handleDashboard.bind(this);
     this.handleHidden = this.handleHidden.bind(this);
     this.getData = this.getData.bind(this);
 
@@ -26,6 +27,7 @@ class Dashboard extends Component {
       isLoading: true,
       addSources: false,
       addCategories: false,
+      dashboard: true,
       errorMessage: '',
       successMessage: '',
       hidden: true
@@ -253,7 +255,8 @@ class Dashboard extends Component {
 
     this.setState({
       addSources: true,
-      addCategories: false
+      addCategories: false,
+      dashboard: false
     })
   }
   
@@ -262,7 +265,8 @@ class Dashboard extends Component {
     
     this.setState({
       addCategories: true,
-      addSources: false
+      addSources: false,
+      dashboard: false
     })
   }
 
@@ -271,10 +275,33 @@ class Dashboard extends Component {
       hidden: !this.state.hidden
     })
   }
+
+  handleDashboard() {
+    this.setState({
+      dashboard: true,
+      addCategories: false,
+      addSources: false
+    })
+  }
   
   render() {
-    const { isLoggedIn, balance, sources, categories, entries } = this;
-    let { addSources, addCategories, isLoading, errorMessage, successMessage, hidden } = this.state;
+    const { 
+      isLoggedIn, 
+      balance, 
+      sources, 
+      categories, 
+      entries 
+    } = this;
+    
+    let { 
+      addSources, 
+      addCategories, 
+      isLoading, 
+      errorMessage, 
+      successMessage, 
+      hidden, 
+      dashboard 
+    } = this.state;
 
     if(isLoading) {
       return (
@@ -305,6 +332,9 @@ class Dashboard extends Component {
         <div>
           <button onClick={this.handleCategories}>Add Category</button>
           <button onClick={this.handleSources}>Add Source</button>
+          {!dashboard &&
+            <button onClick={this.handleDashboard}>Back to Dashboard</button>
+          }
         </div>
         {addSources ? ( 
           <AddSource 
