@@ -38,7 +38,10 @@ button {
 
 .main-content {
   display: flex;
-  flex-direction: column;
+}
+
+.main-content > div {
+  margin: 10px;
 }
 
 .one-half {
@@ -50,16 +53,42 @@ button {
 }
 
 .form-container {
-  border: 2px #650000 solid;
+  width: 35%;
+  color: #222;
+}
+
+.form-container form {
+  border: 2px #ccc solid;
+  box-shadow: 1px 1px 5px 2px #888;
   padding: 10px;
 }
 
+.form-container h2 {
+  margin: 7px 0;
+  font-weight: 600;
+  color: #003366;
+}
+
+button, .header-container button {
+  background: #003366;
+  color: #fff;
+  padding: 10px 20px;
+  border: 1px #fff solid;
+  border-radius: 5px;
+}
+
+.header-container button:hover {
+  color: #222;
+}
+
 input, select {
+  width: 100%;
   margin-bottom: 10px;
 }
 
 label {
-  margin-right: 5px;
+  margin: 0 5px 5px 0;
+  display: block;
 }
 
 .error-message {
@@ -72,4 +101,9 @@ label {
   background: #658444;
   color: #fff;
   text-align: center;
+}
+
+.income {
+  background: #c7e1fa;
+  border-bottom: 1px #222 solid;
 }

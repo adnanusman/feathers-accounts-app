@@ -348,8 +348,9 @@ class Dashboard extends Component {
           />
         ) : (
           <div className="main-content">
-            <div className="form-container">
+            <div className="form-container one-half">
               <form name="entriesForm" onSubmit={this.addEntry}>
+                <h2>Add an Entry</h2>
                 <fieldset>
                   <label htmlFor="title">Title:</label>
                   <input type="text" name="title" id="title" placeholder="title" />
@@ -396,21 +397,21 @@ class Dashboard extends Component {
                 </fieldset>
                 
                 <button type="submit">Add Entry</button>         
-              </form>
 
-              {errorMessage && 
+                {errorMessage && 
                 <div className="error-message">
                   {errorMessage}
                 </div>
-              }
+                }
 
-              {successMessage && 
-                <div className="success-message">
-                  {successMessage}
-                </div>
-              }
+                {successMessage && 
+                  <div className="success-message">
+                    {successMessage}
+                  </div>
+                }
+              </form>
             </div>
-            <div className="entry-container">
+            <div className="entry-container two-thirds">
               <table>
                 <tbody>
                   <tr>
@@ -450,7 +451,7 @@ class Dashboard extends Component {
                             })
                           } else {
                             return (
-                              <tr key={entry.id}>
+                              <tr key={entry.id} class="income">
                                 <td>{date}</td>
                                 <td>{entry.title}</td>
                                 <td>{categoryTitle}</td>
