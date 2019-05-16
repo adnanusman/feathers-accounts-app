@@ -19,6 +19,7 @@ class Dashboard extends Component {
     this.addEntry = this.addEntry.bind(this);
     this.handleCategories = this.handleCategories.bind(this);
     this.handleSources = this.handleSources.bind(this);
+    this.handleHidden = this.handleHidden.bind(this);
     this.getData = this.getData.bind(this);
 
     this.state = {
@@ -26,7 +27,8 @@ class Dashboard extends Component {
       addSources: false,
       addCategories: false,
       errorMessage: '',
-      successMessage: ''
+      successMessage: '',
+      hidden: true
     }
   }
 
@@ -159,7 +161,14 @@ class Dashboard extends Component {
     const title = document.entriesForm.title.value;
     const category = document.entriesForm.category.value;
     const type = document.entriesForm.type.value;
-    const source = document.entriesForm.source.value;
+
+    let source;
+    if(document.entriesForm.source) {
+      source = document.entriesForm.source.value;
+    } else {
+      source = '';
+    }
+
     const amount = document.entriesForm.amount.value;
 
     if(title === '') {
@@ -250,10 +259,16 @@ class Dashboard extends Component {
       addSources: false
     })
   }
+
+  handleHidden() {
+    this.setState({
+      hidden: !this.state.hidden
+    })
+  }
   
   render() {
     const { isLoggedIn, balance, sources, categories, entries } = this;
-    let { addSources, addCategories, isLoading, errorMessage, successMessage } = this.state;
+    let { addSources, addCategories, isLoading, errorMessage, successMessage, hidden } = this.state;
 
     if(isLoading) {
       return (
@@ -280,7 +295,6 @@ class Dashboard extends Component {
             <p>Your current balance is: ${balance}</p>
           </div>
         </div>
-
 
         <div>
           <button onClick={this.handleCategories}>Add Category</button>
@@ -316,25 +330,29 @@ class Dashboard extends Component {
 
                   </select>
                 </fieldset>          
-                
+
                 <fieldset>
                   <label htmlFor="type">Type:</label>
-                  <select name="type" id="type">
+                  <select name="type" id="type" onChange={this.handleHidden}>
                     <option value="Income">Income</option>
                     <option value="Expense">Expense</option>
                   </select>
                 </fieldset>
-
-                <fieldset>
-                  <label htmlFor="source">Source:</label>
-                  <select name="source" id="source">
-                  {sources && sources.map(source => {
-                    return (
-                      <option key={source.id} value={source.id}>{source.title}</option>
-                    )
-                  })}
-                  </select>
-                </fieldset>
+                
+                {hidden ? ( 
+                  <div></div> 
+                ) : ( 
+                  <fieldset>
+                    <label htmlFor="source">Source:</label>
+                    <select name="source" id="source">
+                    {sources && sources.map(source => {
+                      return (
+                        <option key={source.id} value={source.id}>{source.title}</option>
+                      )
+                    })}
+                    </select>
+                  </fieldset>
+                )}
 
                 <fieldset>
                   <label htmlFor="amount">Amount:</label>
@@ -374,7 +392,8 @@ class Dashboard extends Component {
                       return categories.map(category => {
                         if(entry.categoryId === category.id) {
                           let categoryTitle = category.title;
-                          if(sources) {
+                          // if its an expense entry, check for the source, otherwise ignore it as it will be empty.
+                          if(sources && entry.type === 'Expense') {
                             return sources.map(source => {
                               if(parseInt(entry.source) === source.id) {        
                                 let sourceTitle = source.title;
@@ -391,6 +410,18 @@ class Dashboard extends Component {
                                 )  
                               }
                             })
+                          } else {
+                            return (
+                              <tr key={entry.id}>
+                                <td>{entry.createdAt}</td>
+                                <td>{entry.title}</td>
+                                <td>{categoryTitle}</td>
+                                <td>{entry.source}</td>
+                                <td>{entry.type}</td>
+                                <td>${entry.amount}</td>
+                                <td><button onClick={() => this.deleteEntry(entry.id, entry.type, entry.amount)}>Delete</button></td>  
+                              </tr>
+                            )  
                           }
                         }
                       })
