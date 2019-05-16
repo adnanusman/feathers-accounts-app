@@ -209,6 +209,12 @@ class Dashboard extends Component {
             })
 
             document.entriesForm.reset();
+
+            // reset the type and set hidden state to true
+            document.entriesForm.type.children[0].setAttribute('selected', '');
+            this.setState({
+              hidden: true
+            })
           })
       })
       .catch(() => {
@@ -388,6 +394,7 @@ class Dashboard extends Component {
                   </tr>
                   
                   {entries ? ( entries.map(entry => {
+                    let date = new Date(entry.createdAt).toDateString();
                     if(categories) {
                       return categories.map(category => {
                         if(entry.categoryId === category.id) {
@@ -397,9 +404,10 @@ class Dashboard extends Component {
                             return sources.map(source => {
                               if(parseInt(entry.source) === source.id) {        
                                 let sourceTitle = source.title;
+
                                 return (
                                   <tr key={entry.id}>
-                                    <td>{entry.createdAt}</td>
+                                    <td>{date}</td>
                                     <td>{entry.title}</td>
                                     <td>{categoryTitle}</td>
                                     <td>{sourceTitle}</td>
@@ -413,7 +421,7 @@ class Dashboard extends Component {
                           } else {
                             return (
                               <tr key={entry.id}>
-                                <td>{entry.createdAt}</td>
+                                <td>{date}</td>
                                 <td>{entry.title}</td>
                                 <td>{categoryTitle}</td>
                                 <td>{entry.source}</td>
