@@ -6,30 +6,86 @@ class Stats extends Component {
     super(props);
 
     this.client = this.props.client;
-    this.userId = this.userId;
+    this.userId = this.props.userId;
 
     this.renderChart = this.renderChart.bind(this);
+    this.genEntries = this.getEntries.bind(this);
 
-    this.state = {
-
-    }
+    this.months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    this.data = null;
   }
 
-  renderChart(data, data2, labels) {
+  componentWillMount() {
+    this.getEntries();
+  }
+
+  async getEntries() {
+    let income = [];
+    let expense = [];
+
+    await this.client.service('entries')
+      .find({
+        query: {
+          personId: {
+            $eq: this.userId
+          }
+        }
+      })
+      .then(response => {
+        return response.data.map(entry => {
+          let type = entry.type;
+          // get the month.. returns 0 - 11
+          let month = new Date(entry.createdAt).getMonth();
+          let amount = entry.amount;
+
+          // create array with 12 months income/expenses consolidated into one amount per month.
+          for(var i = 0; i < 12; i++) {
+            if(month === i) {
+              if(type === 'Income') {
+                if(income[i] === undefined) {
+                  income[i] = amount;
+                } else {
+                  income[i] = +income[i] + +amount;
+                }
+              } else {
+                if(expense[i] === undefined) {
+                  expense[i] = amount;
+                } else {
+                  expense[i] = +expense[i] + +amount;
+                }
+              }
+            } else {
+              // if no income or expense for that month, mark it as 0
+              if(income[i] === undefined) {
+                income[i] = 0;
+              }
+
+              if(expense[i] === undefined) {
+                expense[i] = 0;
+              }
+            }
+          }
+        })
+      })
+      
+      this.renderChart({income, expense});
+  }
+
+  renderChart(data) {
     var ctx = document.getElementById("myChart").getContext('2d');
     var myChart = new Chart(ctx, {
         type: 'bar',
         data: {
-            labels: labels,
+            labels: this.months,
             datasets: [{
-                label: 'Profits',
-                data: data,
+                label: 'Income',
+                data: data.income,
                 borderColor: 'rgba(75, 150, 192, 1)',
                 backgroundColor: 'rgba(75, 150, 192, 0.4)',
             },
             {
                 label: 'Expenses',
-                data: data2,
+                data: data.expense,
                 borderColor: '#650000',
                 backgroundColor: 'rgba(255, 0, 0, 0.2)',
             }
@@ -48,13 +104,6 @@ class Stats extends Component {
             }
         },
     });
-  }
-
-  componentDidMount() {
-    var data = [20000, 14000, 12000, 15000, 18000, 19000, 22000];
-    var data2 = [20000, 44000, 1200, 15000, 8000, 9000, 22000]
-    var labels =  ["January", "February", "March", "April", "June", "July", "August", "September", "October", "November", "December"];
-    this.renderChart(data, data2, labels);
   }
 
   render() {
