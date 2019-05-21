@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import LoginHelper from './LoginHelper.jsx';
 import AddSource from './AddSource.jsx';
 import AddCategory from './AddCategory.jsx';
+import Stats from './Stats.jsx';
 
 class Dashboard extends Component {
   constructor(props) {
@@ -20,6 +21,7 @@ class Dashboard extends Component {
     this.handleCategories = this.handleCategories.bind(this);
     this.handleSources = this.handleSources.bind(this);
     this.handleDashboard = this.handleDashboard.bind(this);
+    this.handleStats = this.handleStats.bind(this);
     this.handleHidden = this.handleHidden.bind(this);
     this.getData = this.getData.bind(this);
 
@@ -30,7 +32,8 @@ class Dashboard extends Component {
       dashboard: true,
       errorMessage: '',
       successMessage: '',
-      hidden: true
+      hidden: true,
+      stats: false
     }
   }
 
@@ -256,7 +259,8 @@ class Dashboard extends Component {
     this.setState({
       addSources: true,
       addCategories: false,
-      dashboard: false
+      dashboard: false,
+      stats: false
     })
   }
   
@@ -266,7 +270,19 @@ class Dashboard extends Component {
     this.setState({
       addCategories: true,
       addSources: false,
-      dashboard: false
+      dashboard: false,
+      stats: false
+    })
+  }
+
+  handleStats(e) {
+    e.preventDefault();
+    
+    this.setState({
+      addCategories: false,
+      addSources: false,
+      dashboard: false,
+      stats: true
     })
   }
 
@@ -280,7 +296,8 @@ class Dashboard extends Component {
     this.setState({
       dashboard: true,
       addCategories: false,
-      addSources: false
+      addSources: false,
+      stats: false
     })
   }
   
@@ -293,7 +310,8 @@ class Dashboard extends Component {
       entries 
     } = this;
     
-    let { 
+    let {
+      stats,
       addSources, 
       addCategories, 
       isLoading, 
@@ -332,6 +350,7 @@ class Dashboard extends Component {
         <div>
           <button onClick={this.handleCategories}>Add Category</button>
           <button onClick={this.handleSources}>Add Source</button>
+          <button onClick={this.handleStats}>Stats</button>
           {!dashboard &&
             <button onClick={this.handleDashboard}>Back to Dashboard</button>
           }
@@ -345,6 +364,11 @@ class Dashboard extends Component {
           <AddCategory 
             client={this.client}
             userId={this.userId} 
+          />
+        ) : (stats ? (
+          <Stats
+            client={this.client}
+            userId={this.userId}
           />
         ) : (
           <div className="main-content">
@@ -474,7 +498,7 @@ class Dashboard extends Component {
               </table>
             </div>
           </div>        
-        ))}         
+        )))}         
       </div>          
     );
   }
