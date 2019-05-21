@@ -287,9 +287,9 @@ class Dashboard extends Component {
   }
 
   handleHidden() {
-    this.setState({
-      hidden: !this.state.hidden
-    })
+    this.setState(prevState => ({
+      hidden: !prevState.hidden
+    }))
   }
 
   handleDashboard() {
@@ -475,7 +475,7 @@ class Dashboard extends Component {
                             })
                           } else {
                             return (
-                              <tr key={entry.id} class="income">
+                              <tr key={entry.id} className="income">
                                 <td>{date}</td>
                                 <td>{entry.title}</td>
                                 <td>{categoryTitle}</td>
