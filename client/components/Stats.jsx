@@ -12,7 +12,6 @@ class Stats extends Component {
     this.genEntries = this.getEntries.bind(this);
 
     this.months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-    this.data = null;
   }
 
   componentWillMount() {
