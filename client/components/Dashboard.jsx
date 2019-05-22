@@ -96,6 +96,9 @@ class Dashboard extends Component {
   }
 
   setBalance() {
+    this.setState({
+      isLoading: true
+    })
     const userId = this.userId;
 
     this.client.service('balance')
@@ -114,6 +117,11 @@ class Dashboard extends Component {
           })
           .then(response => {
             this.balance = Accounting.formatMoney(response.currentBal);
+
+            // just to update the state and reset the component
+            this.setState({
+              isLoading: false
+            })
           })
         } else {
           this.balance = Accounting.formatMoney(response.data[0].currentBal);
