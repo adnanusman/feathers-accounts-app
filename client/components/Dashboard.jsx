@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Accounting from 'accounting';
 
 import LoginHelper from './LoginHelper.jsx';
 import AddSource from './AddSource.jsx';
@@ -60,13 +61,14 @@ class Dashboard extends Component {
 
   changeBalance(type, amount, del = false) {
     let newBalance;
-    
+    const oldBalance = Accounting.unformat(this.balance);
+
     if(del === false) {
-      newBalance = type === 'Income' ? parseInt(this.balance) + parseInt(amount) : parseInt(this.balance) - parseInt(amount);
+      newBalance = type === 'Income' ? oldBalance + +amount : oldBalance - +amount;
     } else {
-      newBalance = type === 'Income' ? parseInt(this.balance) - parseInt(amount) : parseInt(this.balance) + parseInt(amount);
+      newBalance = type === 'Income' ? oldBalance - +amount : oldBalance + +amount;
     }
-  
+
     this.client.service('balance')
       .find({
         query: {
@@ -83,7 +85,7 @@ class Dashboard extends Component {
             currentBal: newBalance
           })
           .then(response => {
-            this.balance = response.currentBal;
+            this.balance = Accounting.formatMoney(response.currentBal);
 
             // just to update the state and reset the component
             this.setState({
@@ -111,10 +113,10 @@ class Dashboard extends Component {
             personId: userId
           })
           .then(response => {
-            this.balance = response.currentBal;          
+            this.balance = Accounting.formatMoney(response.currentBal);
           })
         } else {
-          this.balance = response.data[0].currentBal;
+          this.balance = Accounting.formatMoney(response.data[0].currentBal);
         }
       })
   }
@@ -343,7 +345,7 @@ class Dashboard extends Component {
           <div className="header-right">
             <button type="button" onClick={this.logout} className="button button-primary block signup">Logout</button>
             
-            <p>Your current balance is: ${balance}</p>
+            <p>Your current balance is: {balance}</p>
           </div>
         </div>
 
@@ -417,7 +419,7 @@ class Dashboard extends Component {
 
                 <fieldset>
                   <label htmlFor="amount">Amount:</label>
-                  <input type="number" name="amount" id="amount" placeholder="Enter Amount"></input>
+                  <input type="number" step="0.01" name="amount" id="amount" placeholder="Enter Amount"></input>
                 </fieldset>
                 
                 <button type="submit">Add Entry</button>         
@@ -467,7 +469,7 @@ class Dashboard extends Component {
                                     <td>{categoryTitle}</td>
                                     <td>{sourceTitle}</td>
                                     <td>{entry.type}</td>
-                                    <td>${entry.amount}</td>
+                                    <td>{Accounting.formatMoney(entry.amount)}</td>
                                     <td><button onClick={() => this.deleteEntry(entry.id, entry.type, entry.amount)}>Delete</button></td>  
                                   </tr>
                                 )  
@@ -481,7 +483,7 @@ class Dashboard extends Component {
                                 <td>{categoryTitle}</td>
                                 <td>{entry.source}</td>
                                 <td>{entry.type}</td>
-                                <td>${entry.amount}</td>
+                                <td>{Accounting.formatMoney(entry.amount)}</td>
                                 <td><button onClick={() => this.deleteEntry(entry.id, entry.type, entry.amount)}>Delete</button></td>  
                               </tr>
                             )  

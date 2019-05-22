@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import Chart from 'chart.js';
+import Accounting from 'accounting';
 
 class Stats extends Component {
   constructor(props) {
@@ -96,10 +97,10 @@ class Stats extends Component {
                     ticks: {
                         beginAtZero: true,
                         callback: function(value, index, values) {
-                            return "U$ "+(value).toFixed(2).replace(/\d(?=(\d{3})+\.)/g, '$&,');
+                            return Accounting.formatMoney(value, '$', 0);
                         }
                     }
-                }]                
+                }]
             }
         },
     });
