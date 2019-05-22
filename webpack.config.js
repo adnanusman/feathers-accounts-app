@@ -13,7 +13,8 @@ module.exports = env => {
     devServer: {
       contentBase: './public',
       port: process.env.PORT || 9000,
-      compress: true
+      compress: true,
+      disableHostCheck: true
     },
     output: {
       path: path.join(__dirname, 'public/'),
