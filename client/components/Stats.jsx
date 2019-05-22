@@ -35,7 +35,7 @@ class Stats extends Component {
           let type = entry.type;
           // get the month.. returns 0 - 11
           let month = new Date(entry.createdAt).getMonth();
-          let amount = entry.amount;
+          let amount = +entry.amount;
 
           // create array with 12 months income/expenses consolidated into one amount per month.
           for(var i = 0; i < 12; i++) {
@@ -44,13 +44,13 @@ class Stats extends Component {
                 if(income[i] === undefined) {
                   income[i] = amount;
                 } else {
-                  income[i] = +income[i] + +amount;
+                  income[i] = income[i] + amount;
                 }
               } else {
                 if(expense[i] === undefined) {
                   expense[i] = amount;
                 } else {
-                  expense[i] = +expense[i] + +amount;
+                  expense[i] = expense[i] + amount;
                 }
               }
             } else {
