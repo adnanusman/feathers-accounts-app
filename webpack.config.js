@@ -61,7 +61,9 @@ module.exports = env => {
       }
     },
     plugins: [
-      new Dotenv()
+      new Dotenv({
+        systemvars: true
+      })
     ]
   }
 };
