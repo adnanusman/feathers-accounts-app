@@ -1,11 +1,13 @@
 const path = require('path');
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
 
 module.exports = env => {
   return { 
     context: path.join(__dirname, 'client'),
-    mode: env.NODE_ENV,
+    mode: 'production',
     entry: {
       app: ['@babel/polyfill', './app.js'],
     },
@@ -60,10 +62,25 @@ module.exports = env => {
         }
       }
     },
-    plugins: [
-      new Dotenv({
-        systemvars: true
-      })
-    ]
+    plugins: (function() {
+      let plugins = [];
+
+      plugins.push(
+        new Dotenv({
+          systemvars: true
+        }),
+        new OptimizeCSSAssetsPlugin()
+      )
+
+      if(env.NODE_ENV !== 'development') {
+        plugins.push(
+          new CompressionPlugin({
+            algorithm: 'gzip'
+          })  
+        )
+      }
+
+      return plugins;
+    })()
   }
 };
