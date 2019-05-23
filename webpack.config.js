@@ -3,11 +3,12 @@ const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = env => {
   return { 
     context: path.join(__dirname, 'client'),
-    mode: 'production',
+    mode: env.NODE_ENV,
     entry: {
       app: ['@babel/polyfill', './app.js'],
     },
@@ -74,6 +75,13 @@ module.exports = env => {
 
       if(env.NODE_ENV !== 'development') {
         plugins.push(
+          new TerserPlugin({
+            test: /\.js(\?.*)?$/i,
+            parallel: true,
+            terserOptions: {
+              mangle: true,
+            }
+          }),  
           new CompressionPlugin({
             algorithm: 'gzip'
           })  
