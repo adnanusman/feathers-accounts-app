@@ -4,6 +4,7 @@ const Dotenv = require('dotenv-webpack');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const CompressionPlugin = require('compression-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
+const BrotliPlugin = require('brotli-webpack-plugin');
 
 module.exports = env => {
   return { 
@@ -84,6 +85,12 @@ module.exports = env => {
           }),  
           new CompressionPlugin({
             algorithm: 'gzip'
+          }),
+          new BrotliPlugin({
+            asset: '[path].br[query]',
+            test: /\.(js|css|html|svg)$/,
+            threshold: 10240,
+            minRatio: 0.8
           })  
         )
       }
