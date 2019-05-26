@@ -1,6 +1,7 @@
 import React, {Component} from 'react';
 import Chart from 'chart.js';
 import Accounting from 'accounting';
+import {months} from './../helpers/months.js'; 
 
 class Stats extends Component {
   constructor(props) {
@@ -12,7 +13,7 @@ class Stats extends Component {
     this.renderChart = this.renderChart.bind(this);
     this.genEntries = this.getEntries.bind(this);
 
-    this.months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    this.months = months;
   }
 
   componentWillMount() {
