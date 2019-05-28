@@ -1,6 +1,10 @@
 const path = require('path');
 const webpack = require('webpack');
 const Dotenv = require('dotenv-webpack');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CompressionPlugin = require('compression-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const BrotliPlugin = require('brotli-webpack-plugin');
 
 module.exports = env => {
   return { 
@@ -60,10 +64,38 @@ module.exports = env => {
         }
       }
     },
-    plugins: [
-      new Dotenv({
-        systemvars: true
-      })
-    ]
+    plugins: (function() {
+      let plugins = [];
+
+      plugins.push(
+        new Dotenv({
+          systemvars: true
+        }),
+        new OptimizeCSSAssetsPlugin()
+      )
+
+      if(env.NODE_ENV !== 'development') {
+        plugins.push(
+          new TerserPlugin({
+            test: /\.js(\?.*)?$/i,
+            parallel: true,
+            terserOptions: {
+              mangle: true,
+            }
+          }),  
+          new CompressionPlugin({
+            algorithm: 'gzip'
+          }),
+          new BrotliPlugin({
+            asset: '[path].br[query]',
+            test: /\.(js|css|html|svg)$/,
+            threshold: 10240,
+            minRatio: 0.8
+          })  
+        )
+      }
+
+      return plugins;
+    })()
   }
 };
