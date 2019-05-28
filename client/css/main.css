@@ -107,3 +107,25 @@ label {
   background: #c7e1fa;
   border-bottom: 1px #222 solid;
 }
+
+.column-container {
+  display: flex;
+  width: 1280px;
+  flex-wrap: wrap;
+  margin: 15px 0;
+}
+
+.centered-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.full-width {
+  width: 100%;
+}
+
+table {
+  border: 1px #ccc solid;
+  margin-top: 0;
+}
