@@ -10,7 +10,7 @@ const io = require('socket.io-client');
 const auth = require('@feathersjs/authentication-client');
 
 // Establish a Socket.io connection
-const socket = io('http://localhost:3030');
+const socket = io(process.env.BACKEND_URL);
 
 // Initialize our Feathers client application through Socket.io
 // with hooks and authentication.
